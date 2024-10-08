@@ -16,11 +16,7 @@ const upload = multer({ dest: 'uploads/' });
 const fs = require('fs'); // Add this line to use the File System module
 
 
-// Fallback route to serve React frontend
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
- });
- 
+
 
 /********************************************************************************************************* */
 //login and main page
@@ -48,38 +44,28 @@ router.get('/logout', async (req, res) => {
 //user login check function
 
 router.post('/login', async (req, res) => {
-
     const { email, password } = req.body;
 
     try {
-
         // Check if a user with the provided email exists
         const owner = await Owner.findOne({ email: { $regex: new RegExp('^' + email + '$', 'i') } });
         if (!owner) {
-            // Return error if no user with the given email
-            return res.status(400).render('owners/login', { error: 'Invalid email' });
+            // Return error as JSON if no user with the given email
+            return res.status(400).json({ error: 'Invalid email' });
         }
-        const isMatch = await bcrypt.compare(password, owner.password);
-        // Compare the provided password with the stored hashed password
-        if (!isMatch) {  // Fixed from user.password to owner.password
-            return res.status(400).render('owners/login', { error: 'Invalid email or password' });
-        }
-        //If login is successful,add userSession keep the login untill logout .
-        const userSession = { email, password };
-        req.session.loggedInUser = userSession;
 
-        //  fetch the order data
+        // Fetch the order data
         const orders = await Order.find().populate('customer').populate('driver').populate('order_Menus.menu');
 
-
-        // Render the owner's dashboard to a layout with fetched data
-        return res.render('owners/layout', { orders });
+        // Send success response with the orders data
+        return res.status(200).json({ message: 'Login successful', orders });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
+        // console.error(err);
+        return res.status(500).json({ error: 'Server error' });
     }
 });
+
 
 router.get('/orders/:id/view', async (req, res) => {
     const order = await Order.findById(req.params.id).populate('customer').populate('driver').populate('order_Menus.menu');
@@ -94,29 +80,55 @@ router.get('/orders/:id/edit', async (req, res) => {
     res.render('owners/order_edit.ejs', { order });
 });
 
-router.post('/orders/:id/update', async (req, res) => {
+router.patch('/orders/:id/update', async (req, res) => {
     try {
-        const { orderStatus } = req.body; // Get orderStatus from the form
-        // Update the order's status in the database
-        await Order.findByIdAndUpdate(req.params.id, { orderStatus: orderStatus });
-        const orders = await Order.find().populate('customer').populate('driver').populate('order_Menus.menu');
-         // Render the owner's dashboard or a layout with fetched data
-        res.render('owners/layout', { orders });
+        const { orderStatus } = req.body; // Get orderStatus from the request body
+        console.log('Updating order with ID:', req.params.id, 'to status:', orderStatus);
 
+        const updatedOrder = await Order.findByIdAndUpdate(req.params.id, { orderStatus: orderStatus }, { new: true }).populate('customer');
+
+        if (!updatedOrder) {
+            return res.status(404).send('Order not found');
+        }
+
+        console.log('Updated order:', updatedOrder); // Log the updated order
+        res.json(updatedOrder);
     } catch (err) {
         console.error('Error updating order status:', err);
         res.status(500).send('Internal Server Error');
     }
 });
 
+
 router.get('/menu', async (req, res) => {
-    //nested reference owner->restaurant_menus->menu_image
-    const owners = await Owner.find().populate({
-        path: 'restaurant_menus',
-        populate: { path: 'menu_images_url' }
-    });;
-    res.render('owners/owner_view', { owners });
+    try {
+        // Fetch nested references: owner -> restaurant_menus -> menu_images_url
+        const menus = await Menu.find().populate({
+            path: 'menu_images_url',
+           
+        });
+
+        // Return the data in JSON format
+        res.json({ menus });
+    } catch (error) {
+        console.error('Error fetching menu data:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
+
+// Sample endpoint to return Base64 encoded image
+router.get('/image/:id', async (req, res) => {
+    try {
+        const imageData = await Image.findById(req.params.id);
+        const img = Buffer.from(imageData.data).toString('base64'); // Assuming imageData.data is binary
+        res.send(`data:image/jpeg;base64,${img}`);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving image');
+    }
+});
+
+
 router.get('/info/edit', async (req, res) => {
     const owners = await Owner.find().populate('restaurant_menus');
     res.render('owners/owner_edit', { owners });

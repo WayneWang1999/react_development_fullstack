@@ -1,0 +1,60 @@
+/* Menu Table Styles */
+/* Menu Table Styles */
+.menu-table {
+    width:1800px;
+    margin: 20px auto; /* Center table */
+    border-collapse: collapse; /* Remove double borders */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
+
+.menu-table th,
+.menu-table td {
+    border: 1px solid #ddd; /* Light border */
+    padding: 12px; /* Spacing inside cells */
+    text-align: left; /* Align text to left */
+    font-size: 16px; /* Increase font size */
+}
+
+.menu-table th {
+    background-color: #007bff; /* Header background color */
+    color: white; /* White text */
+    font-weight: bold; /* Bold text */
+}
+
+.menu-table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Zebra striping */
+}
+
+.menu-table tr:hover {
+    background-color: #e0f7fa; /* Highlight row on hover */
+}
+
+.menu-table img {
+    max-width: 50px; /* Resize images */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 5px; /* Rounded corners for images */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .menu-table {
+        width: 95%; /* Full width for small screens */
+    }
+    .menu-table th, .menu-table td {
+        padding: 8px; /* Adjust padding */
+        font-size: 14px; /* Smaller font size */
+    }
+}
+
+
+#container-menu{
+    position: fixed;  /* Fixes the div to the top */
+    top: 0;
+    left: 0;
+    width: 100%;       /* Full width of the page */
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center; /* Center text */
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional shadow for effect */
+}

@@ -246,16 +246,14 @@ const seedData = async () => {
         // await Order.updateOne({ _id: orders[0]._id }, { driver: drivers[0]._id });
         // await Order.updateOne({ _id: orders[1]._id }, { driver: drivers[1]._id });
 
-        // Create owner data
-        const saltRounds = 5;
-        const hashedPassword = await bcrypt.hash('111111', saltRounds);
+        
 
         const owners = await Owner.create([
             {
                 firstName: 'Owner',
                 lastName: 'Wang',
                 email: 'admin@abc.com',
-                password: hashedPassword,
+                password: '111111',
                 restaurant_name: "Noodle Restaurant",
                 restaurant_menus: [menus[0]._id, menus[1]._id, menus[2]._id, menus[3]._id], // Use menu _id references
                 restaurant_address: {

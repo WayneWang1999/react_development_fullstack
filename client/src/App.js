@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import OwnerLogin from './components/OwnerLogin'; // Adjust the path based on where you saved the component
+import DashBoard from './components/DashBoard';
+import Menu from './components/Menu';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          
+          {/* Add other routes as necessary */}
+          {/* Define the route for the Dashboard component */}
+          <Route path="/dashboard" element={<DashBoard />} />
+
+          {/* Define the route for the OwnerLogin */}
+          <Route path="/login" element={<OwnerLogin />} />
+
+          <Route path="/menu" element={<Menu />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
+

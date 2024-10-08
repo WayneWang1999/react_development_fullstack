@@ -1,0 +1,103 @@
+/* General Styles */
+.container {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    width: 100%;
+
+}
+
+
+
+.table {
+    margin-top: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: white;
+}
+
+thead th {
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    padding: 15px;
+}
+
+td,
+th {
+    vertical-align: middle;
+    padding: 12px;
+    text-align: center;
+}
+
+/* Address column - allow wrapping */
+td {
+    white-space: normal;
+    /* Allow text to wrap */
+    word-wrap: break-word;
+}
+
+/* Image size for better consistency */
+.img-fluid {
+    max-width: 60px;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Status badge styles */
+.badge-success {
+    background-color: #28a745;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+}
+
+button.btn {
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .table {
+        font-size: 14px;
+    }
+
+    .display-4 {
+        font-size: 24px;
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between; /* Aligns buttons left and right */
+    padding: 10px 20px; /* Adjust as needed */
+    background-color: #f0f0f0; /* Optional */
+  }
+  
+  .top-left-button, .top-right-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px; /* Adjust padding for button size */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto; /* Ensure button width is based on content */
+  }
+  
+  .top-left-button:hover, .top-right-button:hover {
+    background-color: #0056b3;
+  }
+  #Action_button{
+    display:flex;
+    flex-direction: row;
+    gap:50px;
+  }
+  
