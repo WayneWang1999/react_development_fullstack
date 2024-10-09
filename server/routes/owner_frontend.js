@@ -16,30 +16,10 @@ const upload = multer({ dest: 'uploads/' });
 const fs = require('fs'); // Add this line to use the File System module
 
 
-
-
 /********************************************************************************************************* */
 //login and main page
-router.get('/', async (req, res) => {
 
-    if (req.session.hasOwnProperty("loggedInUser") === true) {
-        // If login is successful, fetch the data
-        const orders = await Order.find().populate('customer').populate('driver').populate('order_Menus.menu');
 
-        // Render the owner's dashboard or a layout with fetched data
-        return res.render('owners/layout', { orders });
-
-    }
-    return res.render('owners/login');
-});
-
-router.get('/logout', async (req, res) => {
-
-    req.session.destroy()
-    console.log("LOGGED OUT!!! Redirecting you back to the / endpoint")
-    return res.redirect("/owner")
-
-});
 
 //user login check function
 
@@ -66,19 +46,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
-router.get('/orders/:id/view', async (req, res) => {
-    const order = await Order.findById(req.params.id).populate('customer').populate('driver').populate('order_Menus.menu');
-
-    res.render('owners/order_view.ejs', { order });
-});
-
-//This is for debug function. In the sumbit project don't use this point.
-router.get('/orders/:id/edit', async (req, res) => {
-    const order = await Order.findById(req.params.id).populate('customer').populate('driver');
-
-    res.render('owners/order_edit.ejs', { order });
-});
 
 router.patch('/orders/:id/update', async (req, res) => {
     try {
@@ -116,84 +83,6 @@ router.get('/menu', async (req, res) => {
     }
 });
 
-// Sample endpoint to return Base64 encoded image
-router.get('/image/:id', async (req, res) => {
-    try {
-        const imageData = await Image.findById(req.params.id);
-        const img = Buffer.from(imageData.data).toString('base64'); // Assuming imageData.data is binary
-        res.send(`data:image/jpeg;base64,${img}`);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error retrieving image');
-    }
-});
-
-
-router.get('/info/edit', async (req, res) => {
-    const owners = await Owner.find().populate('restaurant_menus');
-    res.render('owners/owner_edit', { owners });
-});
-
-router.post('/info/update', async (req, res) => {
-    const { 
-        ownerId, 
-        firstName, 
-        lastName, 
-        email, 
-        password, 
-        restaurant_name, 
-        restaurant_address_street, 
-        restaurant_address_city 
-    } = req.body;
-
-    // Prepare the update object
-    const updatedData = {
-        firstName,
-        lastName,
-        email,
-        restaurant_name
-    };
-
-    // Update address fields only if provided
-    if (restaurant_address_street) {
-        updatedData['restaurant_address.street'] = restaurant_address_street;
-    }
-
-    if (restaurant_address_city) {
-        updatedData['restaurant_address.city'] = restaurant_address_city;
-    }
-
-    // Only hash and update the password if provided
-    if (password && password.trim() !== "") {
-        const saltRounds = 5;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-        updatedData.password = hashedPassword; // Only set if new password provided
-    }
-
-    try {
-        // Update the owner in the database
-        await Owner.findByIdAndUpdate(ownerId, { $set: updatedData });
-
-        res.redirect('/owner/menu');
-    } catch (err) {
-        console.error('Error updating owner:', err);
-        res.status(500).send('Internal Server Error');
-    }
-});
-
-router.get('/menu/:id/edit', async (req, res) => {
-    try {
-
-        const menu = await Menu.findById(req.params.id).populate('menu_images_url');
-        if (!menu) {
-            return res.status(404).send('Menu not found');
-        }
-        res.render('owners/menu_edit', { menu }); // Change 'menus' to 'menu'
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
-    }
-});
 
 router.patch('/menu/:id/edit', upload.single('menuImage'), async (req, res) => {
     try {
