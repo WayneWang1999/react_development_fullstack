@@ -16,7 +16,7 @@ function Menu() {
                     throw new Error('Failed to fetch menu data');
                 }
                 const data = await response.json();
-                console.log('Fetched menu data:', data);
+                //console.log('Fetched menu data:', data);
                 setMenuData(data.menus); // Adjusted to access 'menus' array
             } catch (err) {
                 setError(err.message);

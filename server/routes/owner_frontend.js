@@ -195,44 +195,41 @@ router.get('/menu/:id/edit', async (req, res) => {
     }
 });
 
-router.post('/menu/update', upload.single('menuImage'), async (req, res) => {
+router.patch('/menu/:id/edit', upload.single('menuImage'), async (req, res) => {
     try {
-        const menuId = req.body.menuId;
+        const menuId = req.params.id;
         const updatedData = {
             name: req.body.name,
             sku: req.body.sku,
             description: req.body.description,
             price: req.body.price,
-            inStock: req.body.inStock === 'true'
+            inStock: req.body.inStock === 'true',
         };
 
-        // If a new image is uploaded,use the multer upload the image in the server.Middleware upload.single save a single
-        //file in the uploads/ folder. File information is stored in req.file
         if (req.file) {
-            // Create a new Image document
             const newImage = new Image({
                 img: {
-                    data: fs.readFileSync(req.file.path), // Read image file data
-                    contentType: req.file.mimetype        // Set the content type
+                    data: fs.readFileSync(req.file.path),
+                    contentType: req.file.mimetype,
                 },
-                name: req.file.originalname             // Set the original file name
+                name: req.file.originalname,
             });
 
-            // Save the image to the Image collection
             const savedImage = await newImage.save();
-
-            // Add the reference (ObjectId) to the menu_images_url field in the Menu document
             updatedData.menu_images_url = savedImage._id;
+            fs.unlinkSync(req.file.path); // Remove the uploaded file from the server
         }
 
-        // Update the menu item with the new data
-        const updatedMenu = await Menu.findByIdAndUpdate(menuId, updatedData, { new: true }).populate('menu_images_url');
+        const updatedMenu = await Menu.findByIdAndUpdate(menuId, updatedData, {
+            new: true,
+        }).populate('menu_images_url');
 
-        res.redirect('/owner/menu');
+        res.json({ success: true, updatedMenu });
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
+
 
 module.exports = router;
 

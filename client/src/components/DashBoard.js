@@ -45,6 +45,9 @@ const Dashboard = () => {
     }
     //add for get the menu data
    
+    const handleButtonClick_menuEdit = () => {
+        navigate('/menuEdit');
+    };
 
     const handleButtonClick = () => {
         navigate('/menu');
@@ -56,7 +59,7 @@ const Dashboard = () => {
   // Function to update order status to 'Ready'
   const handleStatusUpdate = async (orderId) => {
     try {
-        console.log(orderId)
+        //console.log(orderId)
       const response = await fetch(`/owner/orders/${orderId}/update`, {
         method: 'PATCH',
         headers: {
@@ -85,6 +88,7 @@ const Dashboard = () => {
         <div className="container-fluid p-0" style={{ height: "100vh" }}>
             <div className="header">
                 <button className="top-left-button" onClick={handleButtonClick}>Restaurant Menu</button>
+                <button className="top-left-button" onClick={handleButtonClick_menuEdit}>Restaurant Menu Edit</button>
                 <button className="top-right-button">Logout</button>
             </div>
             <div className="text-center my-3">

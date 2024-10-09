@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import OwnerLogin from './components/OwnerLogin'; // Adjust the path based on where you saved the component
 import DashBoard from './components/DashBoard';
 import Menu from './components/Menu';
+import MenuEdit from './components/MenuEdit';
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
           <Route path="/login" element={<OwnerLogin />} />
 
           <Route path="/menu" element={<Menu />} />
+
+          <Route path="/menuEdit" element={<MenuEdit />} />
         </Routes>
       </div>
     </Router>

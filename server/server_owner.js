@@ -21,7 +21,7 @@ const app = express();
 app.use(cors());
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 // setup sessions for login
@@ -54,7 +54,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 //for the form submit
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: '10mb',extended: true }));
 
 /********* */
 app.listen(PORT, () => {
